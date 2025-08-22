@@ -257,10 +257,11 @@ def get_market_indicators() -> str:
                 })
         except:
             indicators.append({
-                "indicator": "KOSPI",
-                "current_value": "2,600.00",
-                "change": "+15.20",
-                "change_pct": "+0.59"
+                "indicator": "KOSPI", 
+                "current_value": "NULL",
+                "change": "NULL",
+                "change": "NULL",
+                "change_pct": "NULL"
             })
         
         try:
@@ -281,18 +282,34 @@ def get_market_indicators() -> str:
         except:
             indicators.append({
                 "indicator": "KOSDAQ", 
-                "current_value": "850.00",
-                "change": "+8.50",
-                "change_pct": "+1.01"
+                "current_value": "데이터 없음",
+                "change": "NULL",
+                "change_pct": "NULL"
             })
         
-        # 환율 (USD/KRW) - 실제로는 한국은행 API나 환율 API 사용
-        indicators.append({
-            "indicator": "USD/KRW",
-            "current_value": "1,320.50",
-            "change": "-3.20",
-            "change_pct": "-0.24"
-        })
+        # 환율 (USD/KRW) - FinanceDataReader 사용
+        try:
+            usdkrw = fdr.DataReader('USD/KRW', start=datetime.now() - timedelta(days=5))
+            if len(usdkrw) >= 2:
+                current = usdkrw['Close'].iloc[-1]
+                previous = usdkrw['Close'].iloc[-2]
+                change = current - previous
+                change_pct = (change / previous) * 100
+                
+                indicators.append({
+                    "indicator": "USD/KRW",
+                    "current_value": f"{current:.2f}",
+                    "change": f"{change:+.2f}",
+                    "change_pct": f"{change_pct:+.2f}"
+                })
+        except:
+            # 폴백: 환율 데이터 조회 실패시 고정값 사용
+            indicators.append({
+                "indicator": "USD/KRW",
+                "current_value": "데이터 없음",
+                "change": "NULL",
+                "change_pct": "NULL"
+            })
         
         return indicators
     

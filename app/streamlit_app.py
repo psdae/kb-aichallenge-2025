@@ -258,6 +258,40 @@ def render_sidebar():
 # 메인 채팅 인터페이스
 # =============================================================================
 
+def render_feature_status():
+    """현재 구현된 기능 상태를 보여줍니다."""
+    st.write("해당 데모에서 구현된 에이전트별 툴(기능)은 다음과 같습니다.")
+    
+    # 키키(트렌드 마스터) 도구들
+    st.write("**키키 (트렌드 마스터) 도구:**")
+    st.write("- `get_latest_news()`: 네이버 금융 뉴스 실시간 스크래핑")
+    st.write("- `get_major_movers()`: 주요 종목 변동 조회(일부 구현) - 삼성전자(005930), SK하이닉스(000660), LG에너지솔루션(373220), 삼성바이오로직스(207940), 삼성전자우(005935) 등 주요 종목 데이터 제공 / 추후 급등락 종목으로 구현 가능")
+    st.write("- `get_market_indicators()`: KOSPI/KOSDAQ 지수와 USD/KRW 환율 정보 제공 (FinanceDataReader 사용)")
+    
+    # 아거(종목 분석가) 도구들  
+    st.write("**아거 (종목 분석가) 도구:**")
+    st.write("- `search_stock_code()`: KRX 전체 종목 데이터베이스에서 기업명으로 종목코드 검색 (완전 구현)")
+    st.write("- `get_stock_price()`: FinanceDataReader를 통한 실시간 주가, 변동률, 거래량, 고가/저가 정보 제공")
+    st.write("- `analyze_stock_pattern()`: 5일/20일/60일 이동평균, RSI, 골든크로스/데드크로스 패턴 분석, 거래량 추세 분석")
+    st.write("- `get_company_info()`: 네이버 증권에서 기업 재무정보, 업종 비교 데이터 스크래핑")
+    
+    # 라무(시뮬레이터) 도구들
+    st.write("**라무 (시뮬레이터) 도구:**")
+    st.write("- `generate_scenarios()`: LLM 기반 시장 시나리오 생성, 포트폴리오별 맞춤 분석 제공")
+    # st.write("- 폴백 시나리오: API 오류시 금리 인상, 반도체 수요 회복 등 기본 시나리오 제공")
+    
+    st.write("**콜리 (펀드 매니저), 비비(대화 친구):**")
+    st.write("- 현재 관련 툴 미구현 (에이전트 프롬프트 기반으로 전문화된 대화만 구현)")
+    
+    # # 제한사항들
+    # st.write("**주요 제한사항:**")
+    # st.write("- 환율 데이터: FinanceDataReader 사용, API 오류시 폴백 고정값 제공")
+    # st.write("- 종목 데이터: 주요 5개 종목(삼성전자, SK하이닉스, LG에너지솔루션, 삼성바이오로직스, 삼성전자우)에 최적화")
+    # st.write("- OpenAI API 의존: 시나리오 생성 시 API 한도/오류 가능성")
+    # st.write("- 네트워크 크롤링: 네이버 금융 사이트 구조 변경시 오류 가능성")
+    # st.write("- 팟캐스트 기능: UI만 구현, 실제 음성 생성 미구현")
+    
+
 def render_starter_questions():
     """채팅 사용 예시를 제공합니다."""
     st.write("**채팅 사용 예시:**")
@@ -274,6 +308,10 @@ def render_starter_questions():
     
     for example in examples:
         st.write(f"• {example}")
+
+    # 사용 권장사항
+    st.write("**테스트 권장 종목:**")
+    st.write("삼성전자, SK하이닉스, LG에너지솔루션, 삼성바이오로직스, NAVER, 포스코DX 등의 주요 종목으로 테스트해보세요.")
     
     # st.write("위 예시를 참고하여 자유롭게 질문해보세요!")
 
@@ -383,8 +421,12 @@ def process_user_message(user_input: str):
 
 def render_chat_interface():
     """메인 채팅 인터페이스를 렌더링합니다."""
-    st.header("KB STARGENT Chat")
+    st.header("KB STARGENT Chat Demo")
 
+
+    # 데모 기능 설명 (접이식)
+    with st.expander("데모에서 구현된 기능", expanded=False):
+        render_feature_status()
 
     # 빠른 시작 질문들 (접이식)
     with st.expander("채팅 예시 (이런 질문으로 시작해보세요)", expanded=False):
